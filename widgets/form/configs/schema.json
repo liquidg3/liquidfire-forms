@@ -1,0 +1,32 @@
+{
+    "properties": {
+
+        "formSchema": {
+            "type":    "object",
+            "options": {
+                "label":       "Schema",
+                "description": "The schema you want to render"
+            }
+        },
+
+        "maxCols": {
+            "type":    "number",
+            "options": {
+                "label":       "Maximum columns",
+                "description": "Css libraries (such as twitter bootstrap) have a grid system. You can specify the most amount of columns each row can have here.",
+                "value":       12
+            }
+        },
+
+        "colClass": {
+            "type":    "string",
+            "options": {
+                "label":       "Column class",
+                "description": "The class to wrap each column",
+                "value":       "col-md-%d"
+            }
+        }
+
+
+    }
+}

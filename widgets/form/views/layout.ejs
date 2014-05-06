@@ -1,0 +1,17 @@
+<form class="form">
+
+    <% rows.forEach(function (properties) { %>
+
+    <div class="row">
+
+        <% properties.forEach(function (property) { %>
+
+            <%- rendered[property.name] %>
+
+        <% }); %>
+
+    </div>
+
+    <% }); %>
+
+</form>

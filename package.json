@@ -1,0 +1,12 @@
+{
+    "name":         "liquidfire:Forms",
+    "version":      "0.0.1",
+    "description":  "Supports rendering of forms from schemas as well as submission and validation.",
+    "altairDependencies": {
+        "liquidfire:Onyx":      ">=0.0.x",
+        "titan:Alfred":         ">=0.0.x"
+    },
+    "events": {
+        "did-submit-form": "Triggered whenever a form is submitted through alfred."
+    }
+}
