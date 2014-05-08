@@ -4,12 +4,14 @@
 
 define(['doh/runner',
     'core/tests/support/boot',
-    'altair/plugins/node!path'],
+    'altair/plugins/node!path',
+    'module'],
 
-    function (doh, boot, pathUtil) {
+    function (doh, boot, pathUtil, module) {
 
 
-        var cartridges = [
+        var widgetPath = pathUtil.join(module.uri, '..', '..', 'widgets/form/views'),
+            cartridges = [
                 {
                     path:    'altair/cartridges/apollo/Apollo',
                     options: {
@@ -75,6 +77,16 @@ define(['doh/runner',
                             label:     'First Name',
                             'default': 'Taylor'
                         }
+                    },
+                    lastName:  {
+                        type:    'string',
+                        form:    {
+                            include: false
+                        },
+                        options: {
+                            label:     'First Name',
+                            'default': 'Taylor'
+                        }
                     }
                 }
             };
@@ -88,7 +100,7 @@ define(['doh/runner',
 
                     var forms = nexus('liquidfire:Forms');
 
-                    return forms.formForSchema(formSchema);
+                    return forms.form(formSchema);
 
 
                 }).then(function (form) {
@@ -103,6 +115,27 @@ define(['doh/runner',
 
             },
 
+            'test renderable properties':                function (t) {
+
+                return boot.nexus(cartridges, altairOptions).then(function (nexus) {
+
+                    var forms = nexus('liquidfire:Forms');
+
+                    return forms.form(formSchema);
+
+
+                }).then(function (form) {
+
+                    return form.renderableProperties();
+
+                }).then(function (props) {
+
+                    t.t(!!props.firstName, 'renderable prop missing');
+                    t.f(!!props.lastName, 'non-renderable prop found');
+
+                });
+
+            },
             'test creating form and generate templates': function (t) {
 
                 return boot.nexus(cartridges, altairOptions).then(function (nexus) {
@@ -114,7 +147,11 @@ define(['doh/runner',
 
                 }).then(function (form) {
 
-                    return form.templates();
+                    return form.templates([ widgetPath ]);
+
+                }).then(function (templates) {
+
+                    t.is(pathUtil.join(widgetPath, 'property.ejs'), templates.firstName, 'template resolution did not return expected results');
 
                 });
 

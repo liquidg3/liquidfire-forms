@@ -15,10 +15,19 @@ define(['altair/facades/declare',
 
         getViewValues: function () {
 
-            var schema      = this.get('formSchema');
+            var schema      = this.get('formSchema'),
+                form;
 
-            //load all templates for this schema
-            return this.parent.templatesForSchema(schema, [this.dir + 'views']).then(this.hitch(function (templates) {
+            //load a form using the schema
+            return this.parent.form(schema).then(this.hitch(function (_form) {
+
+                //we'll need the form for later
+                form = _form;
+
+                //use form to find templates
+                return form.templates([this.dir + 'views']);
+
+            })).then(this.hitch(function (templates) {
 
                 var rows        = [],
                     row         = 0,
@@ -26,25 +35,7 @@ define(['altair/facades/declare',
                     colClass    = this.get('colClass', 'col-md-%d'),
                     currentCol  = 0,
                     rendered    = {},
-                    properties  = _.map(schema.properties(), function (property, named) {
-
-                        var prop = _.cloneDeep(property);
-                        prop.name = named;
-
-                        return prop;
-
-                    });
-
-                //remove any property whose include is false
-                properties = _.remove(properties, function (property) {
-
-                    if(!property.form || !_.has(property.form, 'include')) {
-                        return true;
-                    }
-
-                    return property.form.include;
-
-                });
+                    properties  = form.renderableProperties();
 
                 //split props into rows and drop in classes and templates, then render templates
                 _.each(properties, function (prop) {

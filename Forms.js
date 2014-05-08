@@ -19,16 +19,6 @@ define(['altair/facades/declare',
             return this.forge('lib/Form', _schema);
 
 
-        },
-
-        templatesForSchema: function (schema, templatePaths) {
-
-            return this.forge('templates/Resolver').then(function (resolver) {
-
-                return resolver.templatesFromSchema(schema, templatePaths);
-
-            });
-
         }
 
     });

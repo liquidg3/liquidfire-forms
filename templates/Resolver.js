@@ -1,15 +1,19 @@
 define(['altair/facades/declare',
     'altair/mixins/_DeferredMixin',
-    'altair/plugins/node!fs',
     'altair/plugins/node!path',
     'altair/facades/all',
     'lodash'
-], function (declare, _DeferredMixin, fs, pathUtil, all, _) {
+], function (declare,
+             _DeferredMixin,
+             pathUtil,
+             all,
+             _) {
 
     return declare([_DeferredMixin], {
 
         /**
-         * Finds you the templates that should be used for every property on as shema.
+         * Finds you the templates that should be used for every property on as schema.
+         *
          * @param schema
          * @param templatePaths
          * @returns {altair.Deferred}
@@ -17,56 +21,38 @@ define(['altair/facades/declare',
         templatesFromSchema: function (schema, templatePaths) {
 
             var candidates = {},
-                properties = schema.properties();
+                properties = schema.properties(),
+                apollo     = this.nexus('cartridges/Apollo');
 
             _.each(properties, function (prop, name) {
 
-                var _candidates = [];
+                var _candidates = [],
+                    type        = apollo.propertyType(prop.type);
 
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
-                        pathUtil.join(path, 'types', prop.type + '.ejs'),
-                        pathUtil.join(path, 'property.ejs')
+                        pathUtil.join(path, 'property'),
+                        pathUtil.join(path, 'types', prop.type)
                     ]);
 
                 });
 
-                candidates[name] = this.resolveCandidates(_candidates);
+                //does this prop have a template?
+                if(type.template) {
+                    _candidates = _candidates.concat(type.template(prop.options));
+                }
+
+                candidates[name] = this.nexus('liquidfire:Onyx').resolveCandidates(_candidates);
 
             }, this);
 
 
             return all(candidates);
 
-        },
-
-        resolveCandidates: function (candidates) {
-
-            var d           = new this.Deferred(),
-                _candidates = _.clone(candidates),
-                checkNext   = this.hitch(function (template) {
-
-
-                    this.promise(fs, 'stat', template).then(function (stat) {
-
-                        d.resolve(template);
-
-                    }).otherwise(function () {
-
-                        checkNext(_candidates.pop());
-
-                    });
-
-
-                });
-
-            checkNext(_candidates.shift());
-
-
-            return d;
-
         }
+
+
 
     });
 
