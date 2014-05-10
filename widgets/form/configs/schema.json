@@ -9,6 +9,28 @@
             }
         },
 
+        "formValues": {
+            "type":    "object",
+            "options": {
+                "label":       "Values",
+                "description": "The values that will be used to populate schema."
+            }
+        },
+
+        "method": {
+            "type":    "select",
+            "options": {
+                "label":        "Method",
+                "default":      "POST",
+                "multiOptions": {
+                    "POST": "POST",
+                    "GET":  "GET"
+
+                }
+
+            }
+        },
+
         "maxCols": {
             "type":    "number",
             "options": {

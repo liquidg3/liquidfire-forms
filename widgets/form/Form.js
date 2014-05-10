@@ -13,13 +13,29 @@ define(['altair/facades/declare',
 
     return declare([Lifecycle, _HasSchemaMixin], {
 
-        getViewValues: function () {
+        context: function () {
 
             var schema      = this.get('formSchema'),
+                values      = this.get('formValues'),
                 form;
 
             //load a form using the schema
-            return this.parent.form(schema).then(this.hitch(function (_form) {
+            return this.parent.form({
+                id: this.instanceId + '-form',
+                schema: schema
+            }).then(this.hitch(function (form) {
+
+                //pass through settings
+                form.method = this.get('method');
+
+                //populate the form if necessary
+                if(values) {
+                    return form.populate(values);
+                } else {
+                    return form;
+                }
+
+            })).then(this.hitch(function (_form) {
 
                 //we'll need the form for later
                 form = _form;
@@ -35,38 +51,72 @@ define(['altair/facades/declare',
                     colClass    = this.get('colClass', 'col-md-%d'),
                     currentCol  = 0,
                     rendered    = {},
-                    properties  = form.renderableProperties();
+                    hiddenProps = [],
+                    properties  = form.renderableProperties(),
+                    visibleProps = [];
 
-                //split props into rows and drop in classes and templates, then render templates
+                //split props into rows and drop in classes, templates, and html attributes, then render templates
                 _.each(properties, function (prop) {
 
-                    var cols = _.has(prop, 'form') ? prop.form.col : maxCols;
+                    var cols = _.has(prop, 'form') && _.has(prop.form, 'col') ? prop.form.col : maxCols,
+                        isHidden = form.isHidden(prop.name);
 
-                    if(cols + currentCol > maxCols) {
-                        row = row + 1;
-                        currentCol = cols;
-                    } else {
-                        currentCol += cols;
+                    //if it's not hidden, calculate column and row
+                    if(!isHidden) {
+
+                        //add to list op visible props
+                        visibleProps.push(prop);
+
+                        if(cols + currentCol > maxCols) {
+                            row = row + 1;
+                            currentCol = cols;
+                        } else {
+                            currentCol += cols;
+                        }
+
+                        if(!rows[row]) {
+                            rows[row] = [];
+                        }
+
+                        //classname of wrapper
+                        prop.className  = sprintf(colClass, cols);
+
+                        //add to rows
+                        rows[row].push(prop);
+
+
+
+                    }
+                    //if it is hidden, add to hiddenProps and remove from props so we don't double render
+                    else {
+                        hiddenProps.push(prop);
                     }
 
-                    if(!rows[row]) {
-                        rows[row] = [];
-                    }
-
-                    prop.className  = sprintf(colClass, cols);
+                    //always pass the template
                     prop.template   = templates[prop.name];
 
-                    rows[row].push(prop);
+                    //render html attributes and lastly, the property
+                    rendered[prop.name] = form.renderPropertyAttributes(prop).then(this.hitch(function (attribs) {
 
-                    //give rendered version
-                    rendered[prop.name] = this.parent.render(prop.template, prop);
+                        prop.attributes = attribs;
+                        prop.value      = form.get(prop.name);
+
+                        if(_.isUndefined(prop.value)) {
+                            prop.value = '';
+                        }
+
+                        return this.parent.render(prop.template, prop);
+                    }));
 
                 }, this);
 
+
                 return all({
+                    form: form, //so we have action, method, enctype, and other form specific properties
                     rows: rows, //properties in rows
                     rendered: all(rendered), //already rendered form elements
-                    properties: properties //all properties in the order they are in the schema
+                    properties: visibleProps, //all properties in the order they are in the schema
+                    hiddenProperties: hiddenProps
                 });
 
             }));

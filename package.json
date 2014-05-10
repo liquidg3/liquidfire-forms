@@ -6,8 +6,13 @@
         "liquidfire:Onyx": ">=0.0.x",
         "titan:Alfred":    ">=0.0.x"
     },
+    "dependencies":       {
+        "escape-html": ">=1.0.x",
+        "body-parser": ">=1.0.x"
+    },
     "events":             {
-        "did-submit-form":       "Triggered whenever a form is submitted through alfred.",
-        "register-form-element": "Register an Apollo property type with additional template support for form rendering."
+        "did-submit-form":  "Triggered whenever a form is submitted through alfred.",
+        "will-render-form": "When a form is about to be rendered",
+        "did-render-form":  "A form was just rendered!"
     }
 }
