@@ -98,14 +98,26 @@ define(['altair/facades/declare',
                     //render html attributes and lastly, the property
                     rendered[prop.name] = form.renderPropertyAttributes(prop).then(this.hitch(function (attribs) {
 
+                        //set the attribs and the value to the property
                         prop.attributes = attribs;
-                        prop.value      = form.get(prop.name);
 
-                        if(_.isUndefined(prop.value)) {
+                        //get the value
+                        return this.when(form.get(prop.name));
+
+
+                    })).then(this.hitch(function (value) {
+
+                        //get the property type object incase it has a "render" method on it
+                        var type = form.schema().propertyType(prop.type);
+
+                        if(_.isUndefined(value)) {
                             prop.value = '';
+                        } else {
+                            prop.value = value;
                         }
 
-                        return this.parent.render(prop.template, prop);
+                        return (type.render) ? type.render(prop.template, prop) : this.parent.render(prop.template, prop);
+
                     }));
 
                 }, this);

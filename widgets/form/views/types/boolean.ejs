@@ -1,7 +1,7 @@
 <div class="form-group <%= className %>">
 
     <label for="<%= name %>" class="property-label"><%= options.label %>
-        <input type="checkbox" class="form-control" id="<%= name %>">
+        <input type="checkbox" <% if(value) { %>checked="checked"<% } %> class="form-control" id="<%= name %>">
     </label>
 
 </div>
