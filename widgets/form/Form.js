@@ -22,7 +22,8 @@ define(['altair/facades/declare',
             //load a form using the schema
             return this.parent.form({
                 id: this.instanceId + '-form',
-                schema: schema
+                schema: schema,
+                enctype: this.get('enctype')
             }).then(this.hitch(function (form) {
 
                 //pass through settings

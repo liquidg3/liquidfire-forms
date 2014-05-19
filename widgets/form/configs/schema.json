@@ -17,6 +17,14 @@
             }
         },
 
+        "enctype": {
+            "type":    "string",
+            "options": {
+                "label": "Enctype",
+                "value": "application/x-www-form-urlencoded"
+            }
+        },
+
         "method": {
             "type":    "select",
             "options": {
