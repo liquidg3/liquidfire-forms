@@ -3,10 +3,9 @@ define(['altair/facades/declare',
     'apollo/Schema',
     'altair/facades/mixin',
     'altair/events/Emitter',
-    'lodash',
-    'altair/plugins/node!multiparty'
+    'lodash'
 
-], function (declare, Lifecycle, Schema, mixin, Emitter, _, multiparty) {
+], function (declare, Lifecycle, Schema, mixin, Emitter, _) {
 
     return declare([Lifecycle, Emitter], {
 
