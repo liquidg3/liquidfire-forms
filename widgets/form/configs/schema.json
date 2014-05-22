@@ -30,7 +30,7 @@
             "options": {
                 "label":        "Method",
                 "default":      "POST",
-                "multiOptions": {
+                "choices": {
                     "POST": "POST",
                     "GET":  "GET"
 
