@@ -29,6 +29,7 @@ define(['altair/facades/declare',
                 var _candidates = [],
                     type        = apollo.propertyType(prop.type);
 
+                //default paths (property.ejs, types/string.ejs)
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
@@ -42,6 +43,13 @@ define(['altair/facades/declare',
                 if(type.template) {
                     _candidates = _candidates.concat(type.template(prop.options));
                 }
+
+
+                //is there a form.template specified in the schema?
+                if(prop.form && prop.form.template) {
+                    _candidates.push(this.resolvePath(prop.form.template));
+                }
+
 
                 candidates[name] = this.nexus('liquidfire:Onyx').resolveCandidates(_candidates);
 
