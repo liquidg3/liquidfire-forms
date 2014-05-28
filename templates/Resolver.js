@@ -16,7 +16,7 @@ define(['altair/facades/declare',
          *
          * @param schema
          * @param templatePaths
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         templatesFromSchema: function (schema, templatePaths) {
 
