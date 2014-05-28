@@ -60,7 +60,7 @@ signup: function (e) {
                     },
                     options: {
                         label: 'Role id?',
-                        description: 'This is a bad example of why you'd want a hidden field'
+                        description: 'This is a bad example of why you\'d want a hidden field'
                     }
                 }
             }
