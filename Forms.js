@@ -27,7 +27,7 @@ define(['altair/facades/declare',
          *
          * @param options
          * @param values
-         * @returns {*}
+         * @returns {altair.Promise}
          */
         form: function (options) {
 
