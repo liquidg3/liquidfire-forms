@@ -1,6 +1,6 @@
 # liquidfire:Forms
 An Altair module to help with form related activity (rendering, submission, etc). 'Forms' comes with 2 parts, the form
-and the widget. The form is a simple [apollo\_HasSchemaMixin](https://github.com/liquidg3/altair/tree/master/core/lib/apollo)
+and the widget. The form is a simple [apollo/\_HasSchemaMixin](https://github.com/liquidg3/altair/tree/master/core/lib/apollo)
 object with additional helpers to facilitate form related activities (enctype, method, action, etc.).
 
 ## Setup dependencies
@@ -21,7 +21,7 @@ In the example below, we'll assume that the signup(e) method is a configured act
 signup: function (e) {
 
     //forge a form widget, its options are passed through directly to the form you are creating
-    return this.widget('liquidFire:Forms/widgets/Form.my-great-form', {
+    return this.widget('liquidfire:Forms/widgets/Form.my-great-form', {
         formSchema: {
             properties: {
 
@@ -105,7 +105,7 @@ this.nexus('liquidfire:Forms').form({
 
 ## Form Submission
 Forms are fully "eventized," so when you want to listen into a form event, you do it using the on() syntax you are used
-to. Remember, always hook into events in your module's startup().
+to. Remember, always hook into events in your module's or controller's startup(options).
 
 ```js
 
@@ -130,8 +130,14 @@ onSubmitMyGreatForm: function (e) {
 }
 
 ```
+## Form widget options
+You can customize the form widget using these options. You can always check the widgets/form/config/schema.json for a
+more in-depth review of the options.
+
+View the [widget's schema](widgets/form/configs/schema.json) to see what it can do.
+
 ## Form options
-These are options you can pass a form:
+These are options you can pass a form.
 
 - **id**: (required) the id of the form
 - **schema**: (required) the apollo schema that this form will use for its properties
@@ -151,7 +157,7 @@ properties: {
             hidden:  true|false, //will render as hidden element at bottom of form
         },
         options: {
-            ... standard apollo property options ...
+            ... apollo property options ...
         }
     }
 }

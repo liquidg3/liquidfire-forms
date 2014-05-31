@@ -2,13 +2,11 @@ define(['altair/facades/declare',
         'altair/Lifecycle',
         'apollo/_HasSchemaMixin',
         'altair/facades/sprintf',
-        'altair/facades/all',
         'lodash'
 ], function (declare,
              Lifecycle,
              _HasSchemaMixin,
              sprintf,
-             all,
              _) {
 
     return declare([Lifecycle, _HasSchemaMixin], {
@@ -17,6 +15,7 @@ define(['altair/facades/declare',
 
             var schema      = this.get('formSchema'),
                 values      = this.get('formValues'),
+                viewPaths   = this.get('viewPaths', []),
                 form;
 
             //load a form using the schema
@@ -42,7 +41,7 @@ define(['altair/facades/declare',
                 form = _form;
 
                 //use form to find templates
-                return form.templates([this.dir + 'views']);
+                return form.templates(viewPaths, this.dir + 'views');
 
             })).then(this.hitch(function (templates) {
 
@@ -124,10 +123,10 @@ define(['altair/facades/declare',
                 }, this);
 
 
-                return all({
+                return this.all({
                     form: form, //so we have action, method, enctype, and other form specific properties
                     rows: rows, //properties in rows
-                    rendered: all(rendered), //already rendered form elements
+                    rendered: this.all(rendered), //already rendered form elements
                     properties: visibleProps, //all properties in the order they are in the schema
                     hiddenProperties: hiddenProps
                 });

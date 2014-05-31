@@ -17,7 +17,6 @@ define(['altair/facades/declare',
             //hook into requests to see if forms were submitted
             this.on('titan:Alfred::did-receive-request').then(this.hitch('onDidReceiveRequest'));
 
-
             return this.inherited(arguments);
 
         },
@@ -90,7 +89,7 @@ define(['altair/facades/declare',
          */
         onDidReceiveRequest: function (e) {
 
-                var r = e.get('request'),
+            var r = e.get('request'),
                 form,
                 dfd,
                 multiForm,

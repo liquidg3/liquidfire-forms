@@ -16,38 +16,58 @@ define(['altair/facades/declare',
          *
          * @param schema
          * @param templatePaths
+         * @param fallbackPath
          * @returns {altair.Promise}
          */
-        templatesFromSchema: function (schema, templatePaths) {
+        templatesFromSchema: function (schema, templatePaths, fallbackPath) {
 
             var candidates = {},
                 properties = schema.properties(),
                 apollo     = this.nexus('cartridges/Apollo');
 
+            if(!fallbackPath) {
+                throw new Error('You must pass a fallbackPath to you template resolver.');
+            }
+
             _.each(properties, function (prop, name) {
 
                 var _candidates = [],
+                    template    = (prop.form) ? prop.form.template : false,
                     type        = apollo.propertyType(prop.type);
 
-                //default paths (property.ejs, types/string.ejs)
-                _.each(templatePaths, function (path) {
+                //fallback goes in first (last in, first out)
+                _candidates = _candidates.concat([
+                    pathUtil.join(fallbackPath, 'property'),
+                    pathUtil.join(fallbackPath, 'types', prop.type)
+                ]);
 
-                    _candidates = _candidates.concat([
-                        pathUtil.join(path, 'property'),
-                        pathUtil.join(path, 'types', prop.type)
-                    ]);
+                if(template && template.search(':') === -1) {
 
-                });
+                    //they may be pointing to a view that is inside the fallbackPath
+                    _candidates.push(pathUtil.join(fallbackPath, template));
 
-                //does this prop have a template?
+                    //default paths (property.ejs, types/string.ejs)
+                    _.each(templatePaths, function (path) {
+
+                        //did they pass a template as prop.form.template and it's NOT a nexus id
+                        _candidates.push(pathUtil.join(path, template));
+
+                    });
+
+                }
+
+                //does this prop have a template()?
                 if(type.template) {
                     _candidates = _candidates.concat(type.template(prop.options));
                 }
 
 
                 //is there a form.template specified in the schema?
-                if(prop.form && prop.form.template) {
-                    _candidates.push(this.resolvePath(prop.form.template));
+                if(template && template.search(':') > 0) {
+
+                    //set both absolute and relative paths
+                    _candidates.push(this.resolvePath(template));
+
                 }
 
 

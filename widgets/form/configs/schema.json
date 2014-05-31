@@ -17,6 +17,15 @@
             }
         },
 
+        "viewPaths": {
+            "type":    "string",
+            "options": {
+                "label":       "View Paths",
+                "many":        true,
+                "description": "I will pass these paths to liquidfire:Forms/templates/Resolver"
+            }
+        },
+
         "enctype": {
             "type":    "string",
             "options": {
@@ -28,8 +37,8 @@
         "method": {
             "type":    "select",
             "options": {
-                "label":        "Method",
-                "default":      "POST",
+                "label":   "Method",
+                "default": "POST",
                 "choices": {
                     "POST": "POST",
                     "GET":  "GET"
