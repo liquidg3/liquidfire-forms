@@ -43,7 +43,7 @@ define(['altair/facades/declare',
 
             else if (_.has(this._forms, formId)) {
 
-                dfd = this.when(this._forms[formId]);
+                dfd = this._forms[formId];
 
             } else {
 
@@ -59,10 +59,7 @@ define(['altair/facades/declare',
                         schema = this.nexus('cartridges/Apollo').createSchema(schema);
                     }
 
-                    dfd = this.forge('lib/Form', _options).then(this.hitch(function (form) {
-                        this._forms[formId] = form;
-                        return form;
-                    }));
+                    dfd = this._forms[formId] = this.forge('lib/Form', _options);
 
                 }
 
