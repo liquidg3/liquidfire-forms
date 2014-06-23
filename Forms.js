@@ -102,7 +102,10 @@ define(['altair/facades/declare',
 
                     form = _form;
 
-                    return this.all(form.getValues({}, { methods: ['fromFormSubmissionValue', 'noop'], event: e }));
+                    //should we auto handle submit?
+                    var methods = _form.autoHandleSubmit ? ['fromFormSubmissionValue', 'toJsValue'] : ['noop'];
+
+                    return this.all(form.getValues({}, { methods: methods, event: e }));
 
                 })).then(this.hitch(function (values) {
 

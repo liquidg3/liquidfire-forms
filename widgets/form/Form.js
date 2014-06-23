@@ -19,11 +19,11 @@ define(['altair/facades/declare',
                 form;
 
             //load a form using the schema
-            return this.parent.form({
+            return this.parent.form(_.defaults({
                 id: this.instanceId + '-form',
                 schema: schema,
                 enctype: this.get('enctype')
-            }).then(this.hitch(function (form) {
+            }, this.get('formOptions'))).then(this.hitch(function (form) {
 
                 //pass through settings
                 form.method = this.get('method');
@@ -85,7 +85,6 @@ define(['altair/facades/declare',
                         rows[row].push(prop);
 
 
-
                     }
                     //if it is hidden, add to hiddenProps and remove from props so we don't double render
                     else {
@@ -104,10 +103,9 @@ define(['altair/facades/declare',
                         //get the value
                         return this.when(form.get(prop.name));
 
-
                     })).then(this.hitch(function (value) {
 
-                        //get the property type object incase it has a "render" method on it
+                        //get the property type object i ncase it has a "render" method on it
                         var type = form.schema().propertyType(prop.type);
 
                         if(_.isUndefined(value)) {

@@ -17,6 +17,14 @@
             }
         },
 
+        "formOptions": {
+            "type":    "object",
+            "options": {
+                "label":       "Form options",
+                "description": "Options to pass through to the form"
+            }
+        },
+
         "viewPaths": {
             "type":    "string",
             "options": {
