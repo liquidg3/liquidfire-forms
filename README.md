@@ -22,6 +22,7 @@ signup: function (e) {
 
     //forge a form widget, its options are passed through directly to the form you are creating
     return this.widget('liquidfire:Forms/widgets/Form.my-great-form', {
+        enctype: 'multipart/form-data',
         formSchema: {
             properties: {
 
@@ -68,8 +69,7 @@ signup: function (e) {
         formValues: {
             firstName: 'Tay',
             lastName: 'Ro'
-        },
-        enctype: 'multipart/form-data'
+        }
     }).then(function (widget) {
 
         //we can save this widget for later, or just render it immediately
@@ -89,7 +89,8 @@ signup: function (e) {
 
 ## Creating a form directly
 If you want to use a form directly (from outside the widget and rendering) you can create them easily. I haven't needed
-to create a form directly because I'm always rendering them, but here is how you can do it just in case.
+to create a form directly because I'm always rendering them and the widget creates it for me, but here is how you can
+do it, just in case.
 
 ``` js
 //create a form off the forms module
@@ -104,8 +105,8 @@ this.nexus('liquidfire:Forms').form({
 ```
 
 ## Form Submission
-Forms are fully "eventized," so when you want to listen into a form event, you do it using the on() syntax you are used
-to. Remember, always hook into events in your module's or controller's startup(options).
+Forms are fully "eventized," so when you want to listen into a form event, you do it using the `on()` syntax you are used
+to. Remember, always hook into events in your module's or controller's `startup(options)`.
 
 ```js
 
@@ -146,7 +147,7 @@ These are options you can pass a form.
 - **method**: 'GET'|'POST' defaults to GET
 
 ## Form schema options
-By passing a "form" block in your schema's properties, you can customize a few aspects of the form.
+By passing a `form` block in your schema's properties, you can customize a few aspects of the form.
 
 ```json
 properties: {
@@ -154,7 +155,7 @@ properties: {
         type: 'string',
         form: {
             include: true|false, //should be included in form
-            hidden:  true|false, //will render as hidden element at bottom of form
+            hidden:  true|false, //will render as hidden element at bottom of the form
         },
         options: {
             ... apollo property options ...
@@ -163,3 +164,4 @@ properties: {
 }
 
 ```
+##Custom template
