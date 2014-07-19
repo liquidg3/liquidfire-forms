@@ -2,14 +2,16 @@ define(['altair/facades/declare',
     'altair/mixins/_DeferredMixin',
     'altair/plugins/node!path',
     'altair/facades/all',
+    'altair/mixins/_AssertMixin',
     'lodash'
 ], function (declare,
              _DeferredMixin,
              pathUtil,
              all,
+             _AssertMixin,
              _) {
 
-    return declare([_DeferredMixin], {
+    return declare([_DeferredMixin, _AssertMixin], {
 
         /**
          * Finds you the templates that should be used for every property on as schema.
@@ -35,11 +37,24 @@ define(['altair/facades/declare',
                     template    = (prop.form) ? prop.form.template : false,
                     type        = apollo.propertyType(prop.type);
 
+
+                this.assert(type, 'you must specify a valid type for your property. you passed "' + prop.type + '".');
+
                 //fallback goes in first (last in, first out)
                 _candidates = _candidates.concat([
                     pathUtil.join(fallbackPath, 'property'),
                     pathUtil.join(fallbackPath, 'types', prop.type)
                 ]);
+
+                //check in default places in template paths as well
+                _.each(templatePaths, function (path) {
+
+                    _candidates = _candidates.concat([
+                        pathUtil.join(path, 'property'),
+                        pathUtil.join(path, 'types', prop.type)
+                    ]);
+
+                });
 
                 if(template && template.search(':') === -1) {
 
