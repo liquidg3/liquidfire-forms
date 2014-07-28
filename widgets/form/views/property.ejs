@@ -1,4 +1,4 @@
-<div class="form-group <%= className %>">
+<div class="form-group <% if (typeof className !== 'undefined') { %><%= className %><% } %>">
 
     <%if(options.label) {%>
     <label class="property-label"><%= options.label %></label>

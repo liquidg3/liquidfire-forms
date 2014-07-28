@@ -40,11 +40,18 @@ define(['altair/facades/declare',
 
                 this.assert(type, 'you must specify a valid type for your property. you passed "' + prop.type + '".');
 
+
+
                 //fallback goes in first (last in, first out)
                 _candidates = _candidates.concat([
                     pathUtil.join(fallbackPath, 'property'),
                     pathUtil.join(fallbackPath, 'types', prop.type)
                 ]);
+
+                //is it a hidden field?
+                if(prop.form && prop.form.hidden) {
+                    _candidates.push(pathUtil.join(fallbackPath, 'partials', 'hidden'));
+                }
 
                 //check in default places in template paths as well
                 _.each(templatePaths, function (path) {
