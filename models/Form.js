@@ -174,7 +174,7 @@ define(['altair/facades/declare',
             }, this);
 
 
-            return this.parent.forge('lib/Form', options);
+            return this.parent.forge('models/Form', options);
 
         },
 

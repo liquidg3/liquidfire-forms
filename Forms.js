@@ -59,7 +59,7 @@ define(['altair/facades/declare',
                         schema = this.nexus('cartridges/Apollo').createSchema(schema);
                     }
 
-                    dfd = this._forms[formId] = this.forge('lib/Form', _options);
+                    dfd = this._forms[formId] = this.forge('models/Form', _options);
 
                 }
 
