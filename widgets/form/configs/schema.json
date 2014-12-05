@@ -30,7 +30,7 @@
             "options": {
                 "label":       "View Paths",
                 "many":        true,
-                "description": "I will pass these paths to liquidfire:Forms/templates/Resolver"
+                "description": "I will pass these paths to liquidfire:Forms/templates/Resolver for template overrides."
             }
         },
 

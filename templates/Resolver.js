@@ -23,13 +23,27 @@ define(['altair/facades/declare',
          */
         templatesFromSchema: function (schema, templatePaths, fallbackPath) {
 
-            var candidates = {},
+            var candidates = {
+                    form: null,
+                    properties: {}
+                },
                 properties = schema.properties(),
                 apollo     = this.nexus('cartridges/Apollo');
 
             if(!fallbackPath) {
                 throw new Error('You must pass a fallbackPath to you template resolver.');
             }
+
+            //main form's template
+            candidates.form = [
+                pathUtil.join(fallbackPath, 'layout')
+            ];
+
+            _.each(templatePaths, function (path) {
+                candidates.form.push(pathUtil.join(path, 'layout'));
+            });
+
+            candidates.form = this.nexus('liquidfire:Onyx').resolveCandidates(candidates.form);
 
             _.each(properties, function (prop, name) {
 
@@ -40,26 +54,54 @@ define(['altair/facades/declare',
 
                 this.assert(type, 'you must specify a valid type for your property. you passed "' + prop.type + '".');
 
-                //fallback goes in first (last in, first out)
+                //fallback goes in first (last in, first out) start with generic property.ejs
+                //*********************************************
                 _candidates = _candidates.concat([
                     pathUtil.join(fallbackPath, 'property'),
-                    pathUtil.join(fallbackPath, 'types', prop.type)
                 ]);
-
-                //is it a hidden field?
-                if(prop.form && prop.form.hidden) {
-                    _candidates.push(pathUtil.join(fallbackPath, 'partials', 'hidden'));
-                }
 
                 //check in default places in template paths as well
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
                         pathUtil.join(path, 'property'),
+                    ]);
+
+                });
+
+                //*********************************************
+                //now look for property type specific
+                _candidates = _candidates.concat([
+                    pathUtil.join(fallbackPath, 'types', prop.type)
+                ]);
+
+                //check in passed paths by type
+                _.each(templatePaths, function (path) {
+
+                    _candidates = _candidates.concat([
                         pathUtil.join(path, 'types', prop.type)
                     ]);
 
                 });
+
+                //is it a hidden field?
+                if(prop.form && prop.form.hidden) {
+
+                    _candidates.push(pathUtil.join(fallbackPath, 'partials', 'hidden'));
+
+                    //check in default places in template paths as well
+                    _.each(templatePaths, function (path) {
+
+                        _candidates = _candidates.concat([
+                            pathUtil.join(path, 'partials', 'hidden')
+                        ]);
+
+                    });
+
+
+                }
+
+                //*********************************************
 
                 if(template && template.search(':') === -1) {
 
@@ -91,12 +133,15 @@ define(['altair/facades/declare',
                 }
 
 
-                candidates[name] = this.nexus('liquidfire:Onyx').resolveCandidates(_candidates);
+                candidates.properties[name] = this.nexus('liquidfire:Onyx').resolveCandidates(_candidates);
 
             }, this);
 
 
-            return all(candidates);
+            return all({
+                form: this.when(candidates.form),
+                properties: this.all(candidates.properties)
+            });
 
         }
 

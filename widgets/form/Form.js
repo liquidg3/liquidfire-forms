@@ -55,6 +55,9 @@ define(['altair/facades/declare',
                     properties  = form.renderableProperties(),
                     visibleProps = [];
 
+                //set layout for this widget
+                this.layout = templates.form;
+
                 //split props into rows and drop in classes, templates, and html attributes, then render templates
                 _.each(properties, function (prop) {
 
@@ -92,7 +95,7 @@ define(['altair/facades/declare',
                     }
 
                     //always pass the template
-                    prop.template   = templates[prop.name];
+                    prop.template   = templates.properties[prop.name];
 
                     //render html attributes and lastly, the property
                     rendered[prop.name] = form.renderPropertyAttributes(prop).then(this.hitch(function (attribs) {
@@ -124,6 +127,7 @@ define(['altair/facades/declare',
                 return this.all({
                     form: form, //so we have action, method, enctype, and other form specific properties
                     rows: rows, //properties in rows
+                    values: values, //the values that were passed as formValues
                     rendered: this.all(rendered), //already rendered form elements
                     properties: visibleProps, //all properties in the order they are in the schema
                     hiddenProperties: hiddenProps
