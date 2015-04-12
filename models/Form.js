@@ -139,7 +139,7 @@ define(['altair/facades/declare',
          */
         renderPropertyAttributes: function (property) {
 
-            var attribs = property.attribs || {},
+            var attribs = property.form && property.form.attribs || property.attribs || {},
                 markup = '';
 
             if (property.options.required) {

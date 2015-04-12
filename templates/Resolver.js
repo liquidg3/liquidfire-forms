@@ -28,19 +28,31 @@ define(['altair/facades/declare',
                     properties: {}
                 },
                 properties = schema.properties(),
+                layout     = 'layout',
                 apollo     = this.nexus('cartridges/Apollo');
 
             if(!fallbackPath) {
                 throw new Error('You must pass a fallbackPath to you template resolver.');
             }
 
+            //does the schema have a form block?
+            if (schema.get('form')) {
+
+                var f = schema.get('form');
+
+                if (f.template) {
+                    layout = f.template;
+                }
+
+            }
+
             //main form's template
             candidates.form = [
-                pathUtil.join(fallbackPath, 'layout')
+                pathUtil.join(fallbackPath, layout)
             ];
 
             _.each(templatePaths, function (path) {
-                candidates.form.push(pathUtil.join(path, 'layout'));
+                candidates.form.push(pathUtil.join(path, layout));
             });
 
             candidates.form = this.nexus('liquidfire:Onyx').resolveCandidates(candidates.form);
@@ -57,14 +69,14 @@ define(['altair/facades/declare',
                 //fallback goes in first (last in, first out) start with generic property.ejs
                 //*********************************************
                 _candidates = _candidates.concat([
-                    pathUtil.join(fallbackPath, 'property'),
+                    pathUtil.join(fallbackPath, 'views', 'property'),
                 ]);
 
                 //check in default places in template paths as well
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
-                        pathUtil.join(path, 'property'),
+                        pathUtil.join(path, 'views', 'form', 'property'),
                     ]);
 
                 });
@@ -72,14 +84,14 @@ define(['altair/facades/declare',
                 //*********************************************
                 //now look for property type specific
                 _candidates = _candidates.concat([
-                    pathUtil.join(fallbackPath, 'types', prop.type)
+                    pathUtil.join(fallbackPath, 'views','types', prop.type)
                 ]);
 
                 //check in passed paths by type
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
-                        pathUtil.join(path, 'types', prop.type)
+                        pathUtil.join(path, 'views', 'form', 'types', prop.type)
                     ]);
 
                 });
@@ -87,19 +99,26 @@ define(['altair/facades/declare',
                 //is it a hidden field?
                 if(prop.form && prop.form.hidden) {
 
-                    _candidates.push(pathUtil.join(fallbackPath, 'partials', 'hidden'));
+                    _candidates.push(pathUtil.join(fallbackPath, 'views', 'partials', 'hidden'));
 
                     //check in default places in template paths as well
                     _.each(templatePaths, function (path) {
 
                         _candidates = _candidates.concat([
-                            pathUtil.join(path, 'partials', 'hidden')
+                            pathUtil.join(path, 'views', 'form', 'partials', 'hidden')
                         ]);
 
                     });
 
 
                 }
+
+
+                //does this prop have a template()?
+                if(type.template) {
+                    _candidates = _candidates.concat(type.template(prop.options));
+                }
+
 
                 //*********************************************
 
@@ -118,11 +137,6 @@ define(['altair/facades/declare',
 
                 }
 
-                //does this prop have a template()?
-                if(type.template) {
-                    _candidates = _candidates.concat(type.template(prop.options));
-                }
-
 
                 //is there a form.template specified in the schema?
                 if(template && template.search(':') > 0) {
@@ -131,7 +145,6 @@ define(['altair/facades/declare',
                     _candidates.push(this.resolvePath(template));
 
                 }
-
 
                 candidates.properties[name] = this.nexus('liquidfire:Onyx').resolveCandidates(_candidates);
 

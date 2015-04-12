@@ -23,6 +23,7 @@ signup: function (e) {
     //forge a form widget, its options are passed through directly to the form you are creating
     return this.widget('liquidfire:Forms/widgets/Form.my-great-form', {
         enctype: 'multipart/form-data',
+        
         formSchema: {
             properties: {
 
@@ -156,6 +157,10 @@ properties: {
         form: {
             include: true|false, //should be included in form
             hidden:  true|false, //will render as hidden element at bottom of the form
+            template: 'optional path to custom template' //see below for details
+        },
+        attribs: {
+            any_custom: 'attribute' //these will be rendered as attributes on the element
         },
         options: {
             ... apollo property options ...
@@ -164,4 +169,82 @@ properties: {
 }
 
 ```
-##Custom template
+##Custom Views/Templates
+The form and every element can load any view you want. But before you start customizing your template settings, it is a good idea to learn how
+template resolution works. In other words, we need to go over how forms decide which views to load.
+
+Lets say you are using the schema above (with the first name field), here is how the `template/Resolver` is going to decide which templates to load. Keep
+in mind it will look relative to the controller invoking `this.widget(...)`. *Note:* You can change the base path your controller looks in
+for views by modifying `this.viewPath`.
+
+These are in order of precidence (so top views load first).
+
+- 1: `./views/form/types/{{propertyType}}.ejs` - so you can change how all `boolean` fields render 
+- 2: `/vendors/liquidfire/modules/forms/widgets/views/types/{{propertyType}}.ejs` - fallback for above view (use form version if overridden version does not exist). 
+- 3: `./views/form/property.ejs` - the generic template all properties will use if one does not exist for the particular type
+- 4: `/vendors/liquidfire/modules/forms/widgets/views/property.ejs` - fallback for the fallback 
+
+### Custom view for a property
+Lets say you want to render a particular property with a special template. You can set the `template` property of the `form` block for
+the property.
+
+```json 
+{
+    "properties": {
+        "firstName": {
+            "type": "string",
+            "form": {
+                "template": "views/form/properties/first-name"
+            },
+            "options": {
+                "label": "First Name",
+            }
+        },
+        "lastName": {
+            "type": "string",
+            "form": {
+                "template": "form/properties/last-name"
+            },
+            "options": {
+                "label": "Last Name"
+            }
+        }
+    }
+}
+
+```
+Then drop your view into `./views/form/properties/first-name.ejs` and `./views/form/properties/last-name.ejs`. You can place your views wherever you want, these
+are just examples.
+
+### Custom view for the form
+Since forms are rendered using [widgets](https://github.com/liquidg3/liquidfire-onyx), all the standard widget rules apply. But, if you only have access to the schema, you can 
+override the template that will be used by the form widget by setting the `template` property at the top level of your schema.
+
+```json
+{
+    "form": {
+        "template": "views/form/signup",
+    },
+    "properties": {
+        "firstName": {
+            "type": "string",
+            "form": {
+                "template": "first-name"
+            },
+            "options": {
+                "label": "First Name",
+            }
+        },
+        "lastName": {
+            "type": "string",
+            "form": {
+                "template": "views/form/properties/last-name"
+            },
+            "options": {
+                "label": "Last Name"
+            }
+        }
+    }
+}
+```
+Then drop in your content to `./views/form/signup.ejs`.

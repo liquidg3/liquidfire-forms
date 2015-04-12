@@ -20,9 +20,9 @@ define(['altair/facades/declare',
 
             //load a form using the schema
             return this.parent.form(_.defaults({
-                id: this.instanceId,
-                schema: schema,
-                enctype: this.get('enctype')
+                id:         this.instanceId,
+                schema:     schema,
+                enctype:    this.get('enctype')
             }, this.get('formOptions'))).then(this.hitch(function (form) {
 
                 //pass through settings
@@ -41,7 +41,7 @@ define(['altair/facades/declare',
                 form = _form;
 
                 //use form to find templates
-                return form.templates(viewPaths, this.dir + 'views');
+                return form.templates(viewPaths, this.dir);
 
             })).then(this.hitch(function (templates) {
 
@@ -82,7 +82,10 @@ define(['altair/facades/declare',
                         }
 
                         //classname of wrapper
-                        prop.className  = sprintf(colClass, cols);
+                        prop.form           = prop.form || {};
+                        prop.form.className = prop.form.className || '';
+                        prop.form.className += sprintf(colClass, cols);
+                        prop.className      = prop.form.classNam;
 
                         //add to rows
                         rows[row].push(prop);
@@ -101,7 +104,7 @@ define(['altair/facades/declare',
                     rendered[prop.name] = form.renderPropertyAttributes(prop).then(this.hitch(function (attribs) {
 
                         //set the attribs and the value to the property
-                        prop.attributes = attribs;
+                        prop.attributes = prop.attribs = attribs;
 
                         //get the value
                         return this.when(form.get(prop.name));
@@ -117,6 +120,7 @@ define(['altair/facades/declare',
                             prop.value = value;
                         }
 
+                        prop.requestEvent = this.options.requestEvent;
                         return (type.render) ? type.render(prop.template, prop) : this.parent.render(prop.template, prop);
 
                     }));

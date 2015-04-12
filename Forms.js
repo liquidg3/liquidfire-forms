@@ -30,10 +30,10 @@ define(['altair/facades/declare',
          */
         form: function (options) {
 
-            var _options = options || {},
-                schema = _options.schema,
-                values = _options.values,
-                formId = _options.id,
+            var _options    = options || {},
+                schema      = _options.schema,
+                values      = _options.values,
+                formId      = _options.id,
                 dfd;
 
             if (!formId) {

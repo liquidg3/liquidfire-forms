@@ -4,4 +4,8 @@
         <input  <%- attributes %> type="checkbox" <% if(value) { %>checked="checked"<% } %> class="form-control" value="1" name="<%= name %>">
     </label>
 
+    <% if (options.description) { %>
+        <p class="help-block"><%= options.description %></p>
+    <% } %>
+
 </div>
