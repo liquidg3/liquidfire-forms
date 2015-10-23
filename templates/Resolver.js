@@ -28,7 +28,7 @@ define(['altair/facades/declare',
                     properties: {}
                 },
                 properties = schema.properties(),
-                layout     = 'layout',
+                layout     = 'views/layout',
                 apollo     = this.nexus('cartridges/Apollo');
 
             if(!fallbackPath) {
