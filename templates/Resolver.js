@@ -28,7 +28,7 @@ define(['altair/facades/declare',
                     properties: {}
                 },
                 properties = schema.properties(),
-                layout     = 'views/layout',
+                layout     = 'layout',
                 apollo     = this.nexus('cartridges/Apollo');
 
             if(!fallbackPath) {
@@ -69,14 +69,14 @@ define(['altair/facades/declare',
                 //fallback goes in first (last in, first out) start with generic property.ejs
                 //*********************************************
                 _candidates = _candidates.concat([
-                    pathUtil.join(fallbackPath, 'views', 'property'),
+                    pathUtil.join(fallbackPath, 'property'),
                 ]);
 
                 //check in default places in template paths as well
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
-                        pathUtil.join(path, 'views', 'form', 'property'),
+                        pathUtil.join(path, 'property'),
                     ]);
 
                 });
@@ -84,14 +84,14 @@ define(['altair/facades/declare',
                 //*********************************************
                 //now look for property type specific
                 _candidates = _candidates.concat([
-                    pathUtil.join(fallbackPath, 'views','types', prop.type)
+                    pathUtil.join(fallbackPath, 'types', prop.type)
                 ]);
 
                 //check in passed paths by type
                 _.each(templatePaths, function (path) {
 
                     _candidates = _candidates.concat([
-                        pathUtil.join(path, 'views', 'form', 'types', prop.type)
+                        pathUtil.join(path, 'types', prop.type)
                     ]);
 
                 });
@@ -99,13 +99,13 @@ define(['altair/facades/declare',
                 //is it a hidden field?
                 if(prop.form && prop.form.hidden) {
 
-                    _candidates.push(pathUtil.join(fallbackPath, 'views', 'partials', 'hidden'));
+                    _candidates.push(pathUtil.join(fallbackPath, 'partials', 'hidden'));
 
                     //check in default places in template paths as well
                     _.each(templatePaths, function (path) {
 
                         _candidates = _candidates.concat([
-                            pathUtil.join(path, 'views', 'form', 'partials', 'hidden')
+                            pathUtil.join(path, 'partials', 'hidden')
                         ]);
 
                     });

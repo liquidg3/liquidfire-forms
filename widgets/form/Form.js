@@ -41,7 +41,7 @@ define(['altair/facades/declare',
                 form = _form;
 
                 //use form to find templates
-                return form.templates(viewPaths, this.dir);
+                return form.templates(viewPaths, pathUtil.join(this.dir, 'views'));
 
             })).then(this.hitch(function (templates) {
 
