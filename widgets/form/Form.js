@@ -2,11 +2,13 @@ define(['altair/facades/declare',
         'altair/Lifecycle',
         'apollo/_HasSchemaMixin',
         'altair/facades/sprintf',
+        'altair/plugins/node!path',
         'lodash'
 ], function (declare,
              Lifecycle,
              _HasSchemaMixin,
              sprintf,
+             pathUtil,
              _) {
 
     return declare([Lifecycle, _HasSchemaMixin], {
@@ -17,6 +19,12 @@ define(['altair/facades/declare',
                 values      = this.get('formValues'),
                 viewPaths   = this.get('viewPaths', []),
                 form;
+
+
+            //all paths here get /form appended
+            viewPaths = _.map(viewPaths, function (path) {
+                return pathUtil.join(path, 'form');
+            });
 
             //load a form using the schema
             return this.parent.form(_.defaults({

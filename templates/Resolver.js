@@ -55,6 +55,11 @@ define(['altair/facades/declare',
                 candidates.form.push(pathUtil.join(path, layout));
             });
 
+            //if they did an app style path ./views/form/...
+            if (layout[0] === '.') {
+                candidates.form.push(this.nexus('Altair').resolvePath(layout));
+            }
+
             candidates.form = this.nexus('liquidfire:Onyx').resolveCandidates(candidates.form);
 
             _.each(properties, function (prop, name) {
@@ -121,8 +126,10 @@ define(['altair/facades/declare',
 
 
                 //*********************************************
-
-                if(template && template.search(':') === -1) {
+                if (template && template[0] === '.') {
+                    _candidates.push(this.nexus('Altair').resolvePath(template));
+                }
+                else if(template && template.search(':') === -1) {
 
                     //they may be pointing to a view that is inside the fallbackPath
                     _candidates.push(pathUtil.join(fallbackPath, template));
@@ -136,10 +143,8 @@ define(['altair/facades/declare',
                     });
 
                 }
-
-
-                //is there a form.template specified in the schema?
-                if(template && template.search(':') > 0) {
+                //is there a form.template specified in the schema with a nexus path
+                else if(template && template.search(':') > 0) {
 
                     //set both absolute and relative paths
                     _candidates.push(this.resolvePath(template));
