@@ -3,8 +3,8 @@
     "version":            "0.2.2",
     "description":        "Supports rendering of forms from schemas as well as submission and validation.",
     "altairDependencies": {
-        "liquidfire:Onyx": ">=0.2.x",
-        "titan:Alfred":    ">=0.2.x"
+        "liquidfire:Onyx": ">=0.3.x",
+        "titan:Alfred":    ">=0.3.x"
     },
     "dependencies":       {
         "escape-html": ">=1.0.x"
