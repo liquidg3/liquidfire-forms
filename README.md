@@ -6,7 +6,7 @@ object with additional helpers to facilitate form related activities (enctype, m
 ## Setup dependencies
 ``` json
 "altairDependencies": {
-    "liquidfire:Forms": ">=0.0.x"
+    "liquidfire:Forms": ">=0.2.x"
 }
 ```
 
