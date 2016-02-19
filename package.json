@@ -3,11 +3,11 @@
     "version":            "0.2.2",
     "description":        "Supports rendering of forms from schemas as well as submission and validation.",
     "altairDependencies": {
-        "liquidfire:Onyx": ">=0.3.x",
-        "titan:Alfred":    ">=0.3.x"
+        "liquidfire:Onyx": "~0.3.0",
+        "titan:Alfred":    "~0.3.0"
     },
     "dependencies":       {
-        "escape-html": ">=1.0.x"
+        "escape-html": "~1.0.0"
     },
     "events":             {
         "did-submit-form":  "Triggered whenever a form is submitted through alfred.",
